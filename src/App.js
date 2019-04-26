@@ -106,8 +106,8 @@ class DataRangePicker extends Component {
         let updateObject = {};
 
         if(!state.isUpdated) {
-            updateObject.firstDate = props.initialStartDate || state.startDate;
-            updateObject.secondDate = props.initialEndDate || state.startDate;
+            updateObject.firstDate = props.initialStartDate || moment().startOf('day');
+            updateObject.secondDate = props.initialEndDate || moment().endOf('day');
             updateObject.isUpdated = true;
         }
 
@@ -214,6 +214,7 @@ class DataRangePicker extends Component {
                             </tbody>
                         </table>
                         <div className="timePicker">
+                            <label>Время </label>
                             <select
                                 value={this.state.firstDate ? this.state.firstDate.hour() : this.state.startDate.hour()}
                                 onChange={(e)=> {
@@ -323,6 +324,7 @@ class DataRangePicker extends Component {
                             </tbody>
                         </table>
                         <div className="timePicker">
+                            <label>Время </label>
                             <select
                                 value={this.state.secondDate ? this.state.secondDate.hour() : this.state.startDate.hour()}
                                 onChange={(e)=> {
@@ -356,7 +358,7 @@ class DataRangePicker extends Component {
                             this.setState({
                                 showCalendar: !this.state.showCalendar
                             })
-                        }}>Выбрать даты</button>
+                        }}>Закрыть</button>
                     </div>
                 </div>}
             </div>
