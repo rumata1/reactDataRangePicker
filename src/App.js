@@ -44,7 +44,6 @@ class DataRangePicker extends Component {
         let startDay = daysInLastMonth - dayOfWeek + 2;
 
         if (startDay > daysInLastMonth) startDay -= 7;
-        //if (dayOfWeek == startDay) startDay = daysInLastMonth - 7;
 
         let curDate = moment([
             lastYear,
@@ -130,8 +129,8 @@ class DataRangePicker extends Component {
             <div className="App">
                 <input
                     type="text"
-                    value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Финиш'}`}
-                    onClick={()=>{
+                    defaultValue={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Финиш'}`}
+                    onFocus={()=>{
                         this.setState({
                             showCalendar: !this.state.showCalendar
                         });

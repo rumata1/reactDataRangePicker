@@ -21,12 +21,18 @@ td[data-item='day']::selection {
 .monthLabel {
   text-align: center;
   padding: 1rem;
+  font-weight: bolder;
+  font-size: 1.5rem;
 }
 
 .weekDaysLabels {
   color: #27d2a3;
   text-transform: uppercase;
   margin-bottom: 1rem;
+}
+
+.weekDaysLabels th {
+  padding: 1rem;
 }
 
 .timePicker {
