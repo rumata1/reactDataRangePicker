@@ -13,6 +13,10 @@ td[data-item='day']::selection {
   background: none;
 }
 
+table {
+  border-spacing: 0;
+}
+
 .monthLabel {
   text-align: center;
   padding: 1rem;
@@ -46,16 +50,6 @@ td[data-item='day']::selection {
 
 td[data-range='true'] {
   background: #27d2a3;
-  color: #ffffff;
-}
-
-td.holiday {
-  background: #ff931f;
-  color: #ffffff;
-}
-
-td.holiday[data-range='true'] {
-  background: #ff3800;
   color: #ffffff;
 }
 
