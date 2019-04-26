@@ -130,7 +130,7 @@ class DataRangePicker extends Component {
             <div className="App">
                 <input
                     type="text"
-                    value={`${this.state.firstDate.format("DD-MM-YY")} - ${this.state.secondDate ? this.state.secondDate.format("DD-MM-YY") : ''}`}
+                    value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : ''} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : ''}`}
                     onClick={()=>{
                         this.setState({
                             showCalendar: !this.state.showCalendar
@@ -292,8 +292,8 @@ class DataRangePicker extends Component {
 const WRAPPER =()=> {
     return(
         <DataRangePicker
-            initialStartDate={moment()}
-            initialEndDate={moment().add(1, 'month')}
+            //initialStartDate={moment()}
+            //initialEndDate={moment().add(1, 'month')}
             onChangeValue={(dateFirst, dateSecond)=>{console.log(dateFirst, dateSecond)}}
         />
     );
