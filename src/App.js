@@ -129,7 +129,7 @@ class DataRangePicker extends Component {
             <div className="App">
                 <input
                     type="text"
-                    defaultValue={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Финиш'}`}
+                    value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Финиш'}`}
                     onFocus={()=>{
                         this.setState({
                             showCalendar: !this.state.showCalendar
@@ -164,13 +164,25 @@ class DataRangePicker extends Component {
                                         data-item="day"
                                         data-first-date={this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
                                         data-second-date={this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
-                                        data-range={
-                                            item > this.state.firstDate && item < this.state.secondDate ? true : false
-                                        }
+                                        data-range={item > this.state.firstDate && item < this.state.secondDate || item > this.state.firstDate && item < this.state.secondDateTemp ? true : false}
                                         key={`week#${index}day#${index2}`}
                                         className={index2 > 4 ? 'holiday' : 'd'}
                                         onClick={()=> {
                                             this.selectDate(item);
+                                        }}
+                                        onMouseEnter={()=> {
+                                            if(this.state.firstDate !== '') {
+                                                this.setState({
+                                                    secondDateTemp: item
+                                                });
+                                            }
+                                        }}
+                                        onMouseOut={()=> {
+                                            if(this.state.firstDate !== '') {
+                                                this.setState({
+                                                    secondDateTemp: ''
+                                                });
+                                            }
                                         }}
                                     >{item.date()}
                                         {this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Начало</p> : false}
@@ -239,11 +251,25 @@ class DataRangePicker extends Component {
                                         data-item="day"
                                         data-first-date={this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
                                         data-second-date={this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
-                                        data-range={item > this.state.firstDate && item < this.state.secondDate ? true : false}
+                                        data-range={item > this.state.firstDate && item < this.state.secondDate || item > this.state.firstDate && item < this.state.secondDateTemp ? true : false}
                                         key={`week2#${index}day#${index2}`}
                                         className={index2 > 4 ? 'holiday' : 'd'}
                                         onClick={()=> {
                                             this.selectDate(item);
+                                        }}
+                                        onMouseEnter={()=> {
+                                            if(this.state.firstDate !== '') {
+                                                this.setState({
+                                                    secondDateTemp: item
+                                                });
+                                            }
+                                        }}
+                                        onMouseOut={()=> {
+                                            if(this.state.firstDate !== '') {
+                                                this.setState({
+                                                    secondDateTemp: ''
+                                                });
+                                            }
                                         }}
                                     >{item.date()}
                                         {this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Начало</p> : false}
