@@ -53,14 +53,14 @@ td[data-range='true'] {
   color: #ffffff;
 }
 
-td[data-second-date='true'] {
-  background: rebeccapurple;
+td[data-first-date='true'] {
+  background: red;
   color: #ffffff;
   position: relative;
 }
 
-td[data-first-date='true'] {
-  background: red;
+td[data-second-date='true'] {
+  background: rebeccapurple;
   color: #ffffff;
   position: relative;
 }
