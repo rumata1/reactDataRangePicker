@@ -4,6 +4,15 @@ td[data-item='day'] {
   padding: 1rem;
 }
 
+td[data-item='day']:hover {
+  background: lightslategrey;
+  color: #ffffff;
+}
+
+td[data-item='day']::selection {
+  background: none;
+}
+
 .monthLabel {
   text-align: center;
   padding: 1rem;

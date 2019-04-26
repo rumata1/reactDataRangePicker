@@ -18,7 +18,8 @@ class DataRangePicker extends Component {
         startDate: moment().startOf('day'),
         endDate: moment().endOf('day').add(1, 'month'),
         firstDate: null,
-        secondDate: null
+        secondDate: null,
+        showCalendar: false
     }
 
     renderCalendar(side) {
@@ -114,11 +115,29 @@ class DataRangePicker extends Component {
         return updateObject;
     }
 
+    componentDidMount() {
+        let nodeList = document.querySelectorAll('td[data-item=day]');
+        for(let i of nodeList) {
+            i.addEventListener('mouseover', ()=>{
+                console.log(1);
+            })
+        }
+    }
+
     render() {
         this.props.onChangeValue(this.state.firstDate, this.state.secondDate);
         return (
             <div className="App">
-                <div className="content" style={{display: 'flex', justifyContent: 'space-around'}}>
+                <input
+                    type="text"
+                    value={`${this.state.firstDate.format("DD-MM-YY")} - ${this.state.secondDate ? this.state.secondDate.format("DD-MM-YY") : ''}`}
+                    onClick={()=>{
+                        this.setState({
+                            showCalendar: !this.state.showCalendar
+                        });
+                    }}
+                />
+                {this.state.showCalendar && <div className="content" style={{display: 'flex', justifyContent: 'space-around'}}>
                     <div>
                         <button onClick={() => {
                             this.setState({
@@ -258,8 +277,13 @@ class DataRangePicker extends Component {
                                     value={item}>{item}</option>)}
                             </select>
                         </div>
+                        <button onClick={()=>{
+                            this.setState({
+                                showCalendar: !this.state.showCalendar
+                            })
+                        }}>Выбрать даты</button>
                     </div>
-                </div>
+                </div>}
             </div>
         );
     }
