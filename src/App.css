@@ -9,11 +9,6 @@ td[data-item='day'] {
   text-align: center;
 }
 
-td[data-item='day']:hover {
-  background: lightslategrey;
-  color: #ffffff;
-}
-
 td[data-item='day']::selection {
   background: none;
 }
@@ -55,21 +50,12 @@ td[data-range='true'] {
 }
 
 td.holiday {
-  background: orangered;
+  background: #ff931f;
   color: #ffffff;
 }
 
 td.holiday[data-range='true'] {
   background: #ff3800;
-  color: #ffffff;
-}
-
-td[data-range='true'][data-other='true'] {
-  
-}
-
-td.holiday[data-range='true'][data-other='true'] {
-  background: #ff9c69;
   color: #ffffff;
 }
 
@@ -83,4 +69,14 @@ td[data-first-date='true'] {
   background: red;
   color: #ffffff;
   position: relative;
+}
+
+td[data-other='true'] {
+  background: #d9d9d9;
+  color: #a3b7bd;
+}
+
+td.holiday[data-range='true'][data-other='true'] {
+  background: #d9d9d9;
+  color: #a3b7bd;
 }
