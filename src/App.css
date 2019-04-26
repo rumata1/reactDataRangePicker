@@ -64,6 +64,15 @@ td.holiday[data-range='true'] {
   color: #ffffff;
 }
 
+td[data-range='true'][data-other='true'] {
+  
+}
+
+td.holiday[data-range='true'][data-other='true'] {
+  background: #ff9c69;
+  color: #ffffff;
+}
+
 td[data-second-date='true'] {
   background: rebeccapurple;
   color: #ffffff;

@@ -162,16 +162,32 @@ class DataRangePicker extends Component {
                                 <tr key={`week#${index}`}>{item.map((item, index2)=>
                                     <td
                                         data-item="day"
-                                        data-first-date={this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
-                                        data-second-date={this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
-                                        data-range={item > this.state.firstDate && item < this.state.secondDate || item > this.state.firstDate && item < this.state.secondDateTemp ? true : false}
+                                        data-first-date={
+                                            this.state.firstDate &&
+                                            item.month() === this.state.startDate.month() &&
+                                            this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
+                                        }
+                                        data-second-date={
+                                            this.state.secondDate &&
+                                            item.month() === this.state.startDate.month() &&
+                                            this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
+                                        }
+                                        data-range={
+                                            item >= this.state.firstDate &&
+                                            item <= this.state.secondDate ||
+                                            item >= this.state.firstDate &&
+                                            item <= this.state.secondDateTemp ? true : false
+                                        }
+                                        data-other={
+                                            item.month() !== this.state.startDate.month() ? true : false
+                                        }
                                         key={`week#${index}day#${index2}`}
                                         className={index2 > 4 ? 'holiday' : 'd'}
                                         onClick={()=> {
                                             this.selectDate(item);
                                         }}
                                         onMouseEnter={()=> {
-                                            if(this.state.firstDate !== '') {
+                                            if(this.state.firstDate !== '' && this.state.secondDate === '') {
                                                 this.setState({
                                                     secondDateTemp: item
                                                 });
@@ -185,8 +201,14 @@ class DataRangePicker extends Component {
                                             }
                                         }}
                                     >{item.date()}
-                                        {this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Начало</p> : false}
-                                        {this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Конец</p> : false}
+                                        {this.state.firstDate &&
+                                        item.month() === this.state.startDate.month() &&
+                                        this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                            <p className="label">Начало</p> : false}
+                                        {this.state.secondDate &&
+                                        item.month() === this.state.startDate.month() &&
+                                        this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                            <p className="label">Конец</p> : false}
                                     </td>)}
                                 </tr>)}
                             </tbody>
@@ -249,16 +271,32 @@ class DataRangePicker extends Component {
                                 <tr key={`week2#${index}`}>{item.map((item, index2)=>
                                     <td
                                         data-item="day"
-                                        data-first-date={this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
-                                        data-second-date={this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false}
-                                        data-range={item > this.state.firstDate && item < this.state.secondDate || item > this.state.firstDate && item < this.state.secondDateTemp ? true : false}
+                                        data-first-date={
+                                            this.state.firstDate &&
+                                            item.month() === this.state.endDate.month() &&
+                                            this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
+                                        }
+                                        data-second-date={
+                                            this.state.secondDate &&
+                                            item.month() === this.state.endDate.month() &&
+                                            this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
+                                        }
+                                        data-range={
+                                            item >= this.state.firstDate &&
+                                            item <= this.state.secondDate ||
+                                            item >= this.state.firstDate &&
+                                            item <= this.state.secondDateTemp ? true : false
+                                        }
+                                        data-other={
+                                            item.month() !== this.state.endDate.month() ? true : false
+                                        }
                                         key={`week2#${index}day#${index2}`}
                                         className={index2 > 4 ? 'holiday' : 'd'}
                                         onClick={()=> {
                                             this.selectDate(item);
                                         }}
                                         onMouseEnter={()=> {
-                                            if(this.state.firstDate !== '') {
+                                            if(this.state.firstDate !== '' && this.state.secondDate === '') {
                                                 this.setState({
                                                     secondDateTemp: item
                                                 });
@@ -272,8 +310,14 @@ class DataRangePicker extends Component {
                                             }
                                         }}
                                     >{item.date()}
-                                        {this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Начало</p> : false}
-                                        {this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Конец</p> : false}
+                                        {this.state.firstDate &&
+                                        item.month() === this.state.endDate.month() &&
+                                        this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                            <p className="label">Начало</p> : false}
+                                        {this.state.secondDate &&
+                                        item.month() === this.state.endDate.month() &&
+                                        this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                            <p className="label">Конец</p> : false}
                                     </td>)}
                                 </tr>)}
                             </tbody>
