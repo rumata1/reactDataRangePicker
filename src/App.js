@@ -169,7 +169,11 @@ class DataRangePicker extends Component {
                                     });
                                 }}
                             >
-                                {HOURS.map(item=> <option value={item}>{item}</option>)}
+                                {HOURS.map(item =>
+                                    <option
+                                        key={`hour${item}`}
+                                        value={item}
+                                    >{item}</option>)}
                             </select>
                             <select
                                 value={this.state.firstDate ? this.state.firstDate.minute() : this.state.startDate.minute()}
@@ -181,7 +185,9 @@ class DataRangePicker extends Component {
                                     });
                                 }}
                             >
-                                {MINUTES.map(item=> <option value={item}>{item}</option>)}
+                                {MINUTES.map(item=> <option
+                                    key={`minute${item}`}
+                                    value={item}>{item}</option>)}
                             </select>
                         </div>
                     </div>
@@ -233,7 +239,9 @@ class DataRangePicker extends Component {
                                     });
                                 }}
                             >
-                                {HOURS.map(item=> <option value={item}>{item}</option>)}
+                                {HOURS.map(item=> <option
+                                    key={`hourNext${item}`}
+                                    value={item}>{item}</option>)}
                             </select>
                             <select
                                 value={this.state.secondDate ? this.state.secondDate.minute() : this.state.startDate.minute()}
@@ -245,7 +253,9 @@ class DataRangePicker extends Component {
                                     });
                                 }}
                             >
-                                {MINUTES.map(item=> <option value={item}>{item}</option>)}
+                                {MINUTES.map(item=> <option
+                                    key={`minuteNext${item}`}
+                                    value={item}>{item}</option>)}
                             </select>
                         </div>
                     </div>
@@ -260,7 +270,7 @@ const WRAPPER =()=> {
         <DataRangePicker
             initialStartDate={moment()}
             initialEndDate={moment().add(1, 'month')}
-            onChangeValue={(value, value2)=>{console.log(value, value2)}}
+            onChangeValue={(dateFirst, dateSecond)=>{console.log(dateFirst, dateSecond)}}
         />
     );
 }
