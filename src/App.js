@@ -106,8 +106,8 @@ class DataRangePicker extends Component {
         let updateObject = {};
 
         if(!state.isUpdated) {
-            updateObject.firstDate = props.initialStartDate;
-            updateObject.secondDate = props.initialEndDate;
+            updateObject.firstDate = props.initialStartDate || state.startDate;
+            updateObject.secondDate = props.initialEndDate || state.startDate;
             updateObject.isUpdated = true;
         }
 
@@ -129,7 +129,7 @@ class DataRangePicker extends Component {
             <div className="App">
                 <input
                     type="text"
-                    value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Финиш'}`}
+                    value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Выберите вторую дату'}`}
                     onFocus={()=>{
                         this.setState({
                             showCalendar: !this.state.showCalendar
