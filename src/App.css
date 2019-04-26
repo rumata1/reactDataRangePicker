@@ -1,0 +1,35 @@
+td[data-item='day'] {
+  color: #696969;
+  cursor: pointer;
+  padding: 1rem;
+}
+
+.monthLabel {
+  text-align: center;
+  padding: 1rem;
+}
+
+.weekDaysLabels {
+  color: #27d2a3;
+  text-transform: uppercase;
+  border-bottom: solid 1px #27d2a3;
+}
+
+.timePicker {
+  text-align: center;
+}
+
+td[data-range='true'] {
+  background: #27d2a3;
+  color: #ffffff;
+}
+
+td[data-second-date='true'] {
+  background: rebeccapurple;
+  color: #ffffff;
+}
+
+td[data-first-date='true'] {
+  background: red;
+  color: #ffffff;
+}
