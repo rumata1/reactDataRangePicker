@@ -130,7 +130,7 @@ class DataRangePicker extends Component {
             <div className="App">
                 <input
                     type="text"
-                    value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : ''} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : ''}`}
+                    value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Финиш'}`}
                     onClick={()=>{
                         this.setState({
                             showCalendar: !this.state.showCalendar
@@ -173,7 +173,10 @@ class DataRangePicker extends Component {
                                         onClick={()=> {
                                             this.selectDate(item);
                                         }}
-                                    >{item.date()}</td>)}
+                                    >{item.date()}
+                                        {this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Начало</p> : false}
+                                        {this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Конец</p> : false}
+                                    </td>)}
                                 </tr>)}
                             </tbody>
                         </table>
@@ -243,7 +246,10 @@ class DataRangePicker extends Component {
                                         onClick={()=> {
                                             this.selectDate(item);
                                         }}
-                                    >{item.date()}</td>)}
+                                    >{item.date()}
+                                        {this.state.firstDate && this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Начало</p> : false}
+                                        {this.state.secondDate && this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? <p className="label">Конец</p> : false}
+                                    </td>)}
                                 </tr>)}
                             </tbody>
                         </table>

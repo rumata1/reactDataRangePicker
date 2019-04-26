@@ -2,6 +2,7 @@ td[data-item='day'] {
   color: #696969;
   cursor: pointer;
   padding: 1rem;
+  text-align: center;
 }
 
 td[data-item='day']:hover {
@@ -28,17 +29,36 @@ td[data-item='day']::selection {
   text-align: center;
 }
 
+.label {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -80%);
+  font-size: 0.8rem;
+}
+
 td[data-range='true'] {
   background: #27d2a3;
+  color: #ffffff;
+}
+
+td.holiday {
+  background: orangered;
+  color: #ffffff;
+}
+
+td.holiday[data-range='true'] {
+  background: #ff3800;
   color: #ffffff;
 }
 
 td[data-second-date='true'] {
   background: rebeccapurple;
   color: #ffffff;
+  position: relative;
 }
 
 td[data-first-date='true'] {
   background: red;
   color: #ffffff;
+  position: relative;
 }
