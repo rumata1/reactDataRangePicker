@@ -5,7 +5,7 @@ const moment = require('moment');
 const HOURS = [];
 const MINUTES = [];
 
-for (let i = 0; i <= 23; i++) {
+for (let i = 0; i < 24; i++) {
    HOURS.push(i);
 }
 

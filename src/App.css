@@ -1,3 +1,7 @@
+body {
+  font-family: Arial;
+}
+
 td[data-item='day'] {
   color: #696969;
   cursor: pointer;
@@ -32,8 +36,11 @@ td[data-item='day']::selection {
 .label {
   position: absolute;
   left: 50%;
-  transform: translate(-50%, -80%);
+  transform: translate(-50%, -75%);
   font-size: 0.8rem;
+  background: white;
+  color: black;
+  width: calc(100% + 1px);
 }
 
 td[data-range='true'] {
