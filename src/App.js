@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import styles from './App.css';
 const moment = require('moment');
 
@@ -16,7 +16,7 @@ for (let i = 0; i < 60; i++) {
 class DataRangePicker extends Component {
     state = {
         startDate: moment().startOf('day'),
-        endDate: moment().endOf('day').add(1, 'month'),
+        endDate: moment().startOf('day').add(1, 'month'),
         firstDate: null,
         secondDate: null,
         showCalendar: false
@@ -24,7 +24,8 @@ class DataRangePicker extends Component {
 
     renderCalendar(side) {
         let start = this.state.startDate;
-        if (side === 'right') start = this.state.endDate;
+        if (side) start = side;
+
         let month = start.month();
         let year = start.year();
         let hour = start.hour();
@@ -61,7 +62,6 @@ class DataRangePicker extends Component {
         let col, row;
 
         let startIndex = firstDay.day();
-
         for (let i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment(curDate).add(24, 'hour')) {
             if (i > 0 && col % 7 === 0) {
                 col = 0;
@@ -72,7 +72,6 @@ class DataRangePicker extends Component {
         }
 
         let html = [];
-
         for (let row = 0; row < 6; row++) {
             let tr = [];
             for (let col = 0; col < 7; col++) {
@@ -84,6 +83,7 @@ class DataRangePicker extends Component {
     }
 
     selectDate(item) {
+
         if (this.state.firstDate === "" && this.state.secondDate === "") {
             this.setState({
                 firstDate: item
@@ -107,24 +107,32 @@ class DataRangePicker extends Component {
 
         if(!state.isUpdated) {
             updateObject.firstDate = props.initialStartDate || moment().startOf('day');
-            updateObject.secondDate = props.initialEndDate || moment().endOf('day');
+            updateObject.secondDate = props.initialEndDate || moment().startOf('day');
             updateObject.isUpdated = true;
-        }
+            updateObject.months = [state.startDate];
+            updateObject.count = 2;
+            if(props.months) {
+                updateObject.count = props.months;
+                state.endDate = moment().startOf('day').add(props.months-1, 'month');
+                let date = state.startDate.clone();
+                for(let i = 1; i < props.months-1; i++) {
+                    let curDate = date.clone();
+                    curDate.add(i, 'month');
+                    updateObject.months.push(curDate);
+                }
+                updateObject.months.push(state.endDate);
+            }
 
+            else {
+                updateObject.months = [state.startDate, state.endDate]
+            }
+        }
         return updateObject;
     }
 
-    componentDidMount() {
-        let nodeList = document.querySelectorAll('td[data-item=day]');
-        for(let i of nodeList) {
-            i.addEventListener('mouseover', ()=>{
-                console.log(1);
-            })
-        }
-    }
 
     render() {
-        this.props.onChangeValue(this.state.firstDate, this.state.secondDate);
+        {this.props.onChangeValue(this.state.firstDate, this.state.secondDate)}
         return (
             <div className="App">
                 <input
@@ -135,231 +143,197 @@ class DataRangePicker extends Component {
                             showCalendar: !this.state.showCalendar
                         });
                     }}
+                    onChange={()=>{}}
                 />
-                {this.state.showCalendar && <div className="content" style={{display: 'flex', justifyContent: 'space-around'}}>
+                {this.state.showCalendar &&
+                <div className="content" style={{display: 'flex', justifyContent: 'space-around'}}>
                     <div>
-                        <button onClick={() => {
-                            this.setState({
-                                startDate: this.state.startDate.subtract(1, 'month'),
-                                endDate: this.state.endDate.subtract(1, 'month')
-                            })
-                        }}>Назад</button>
-                        <div className="monthLabel">
-                            {this.state.startDate.format("MMMM YYYY")}
-                        </div>
-                        <table>
-                            <tbody>
-                            <tr className="weekDaysLabels">
-                                <th>Пн</th>
-                                <th>Вт</th>
-                                <th>Ср</th>
-                                <th>Чт</th>
-                                <th>Пт</th>
-                                <th>Сб</th>
-                                <th>Вс</th>
-                            </tr>
-                            {this.renderCalendar().map((item, index)=>
-                                <tr key={`week#${index}`}>{item.map((item, index2)=>
-                                    <td
-                                        data-item="day"
-                                        data-first-date={
-                                            this.state.firstDate &&
-                                            item.month() === this.state.startDate.month() &&
-                                            this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
-                                        }
-                                        data-second-date={
-                                            this.state.secondDate &&
-                                            item.month() === this.state.startDate.month() &&
-                                            this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
-                                        }
-                                        data-range={
-                                            item >= this.state.firstDate &&
-                                            item <= this.state.secondDate ||
-                                            item >= this.state.firstDate &&
-                                            item <= this.state.secondDateTemp ? true : false
-                                        }
-                                        data-other={
-                                            item.month() !== this.state.startDate.month() ? true : false
-                                        }
-                                        key={`week#${index}day#${index2}`}
-                                        className={index2 > 4 ? 'holiday' : 'd'}
-                                        onClick={()=> {
-                                            this.selectDate(item);
-                                        }}
-                                        onMouseEnter={()=> {
-                                            if(this.state.firstDate !== '' && this.state.secondDate === '') {
-                                                this.setState({
-                                                    secondDateTemp: item
-                                                });
-                                            }
-                                        }}
-                                        onMouseOut={()=> {
-                                            if(this.state.firstDate !== '') {
-                                                this.setState({
-                                                    secondDateTemp: ''
-                                                });
-                                            }
-                                        }}
-                                    >{item.date()}
-                                        {this.state.firstDate &&
-                                        item.month() === this.state.startDate.month() &&
-                                        this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
-                                            <p className="label">Начало</p> : false}
-                                        {this.state.secondDate &&
-                                        item.month() === this.state.startDate.month() &&
-                                        this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
-                                            <p className="label">Конец</p> : false}
-                                    </td>)}
-                                </tr>)}
-                            </tbody>
-                        </table>
-                        <div className="timePicker">
-                            <label>Время </label>
-                            <select
-                                value={this.state.firstDate ? this.state.firstDate.hour() : this.state.startDate.hour()}
-                                onChange={(e)=> {
-                                    const value = e.target.value;
-                                    const data = this.state.firstDate || this.state.startDate;
+                        <div className="buttons">
+                            <button onClick={() => {
+                                this.setState({
+                                    startDate: this.state.startDate.subtract(this.state.count-1, 'month'),
+                                    endDate: this.state.endDate.subtract(this.state.count-1, 'month')
+                                });
+
+                                if (this.props.months) {
+                                    let months = [this.state.startDate];
+                                    let date = this.state.startDate.clone();
+                                    for(let i = 1; i < this.props.months-1; i++) {
+                                        let curDate = date.clone();
+                                        curDate.add(i, 'month');
+                                        months.push(curDate);
+                                    }
+                                    months.push(this.state.endDate);
+
                                     this.setState({
-                                        firstDate: data.hour(value)
+                                        months: months
                                     });
-                                }}
-                            >
-                                {HOURS.map(item =>
-                                    <option
-                                        key={`hour${item}`}
-                                        value={item}
-                                    >{item}</option>)}
-                            </select>
-                            <select
-                                value={this.state.firstDate ? this.state.firstDate.minute() : this.state.startDate.minute()}
-                                onChange={(e)=> {
-                                    const value = e.target.value;
-                                    const data = this.state.firstDate || this.state.startDate;
+                                }
+
+                            }}>Назад</button>
+                            <button onClick={() => {
+                                this.setState({
+                                    startDate: this.state.startDate.add(this.state.count-1, 'month'),
+                                    endDate: this.state.endDate.add(this.state.count-1, 'month')
+                                });
+
+                                if (this.props.months) {
+                                    let months = [this.state.startDate];
+                                    let date = this.state.startDate.clone();
+                                    for(let i = 1; i < this.props.months-1; i++) {
+                                        let curDate = date.clone();
+                                        curDate.add(i, 'month');
+                                        months.push(curDate);
+                                    }
+                                    months.push(this.state.endDate);
+
                                     this.setState({
-                                        firstDate: data.minute(value)
+                                        months: months
                                     });
-                                }}
-                            >
-                                {MINUTES.map(item=> <option
-                                    key={`minute${item}`}
-                                    value={item}>{item}</option>)}
-                            </select>
+                                }
+
+                            }}>Вперед</button>
+                            <div className="timePicker">
+                                <label>Время </label>
+                                <select
+                                    value={this.state.firstDate ? this.state.firstDate.hour() : this.state.startDate.hour()}
+                                    onChange={(e)=> {
+                                        const value = e.target.value;
+                                        const data = this.state.firstDate || this.state.startDate;
+                                        this.setState({
+                                            firstDate: data.hour(value)
+                                        });
+                                    }}
+                                >
+                                    {HOURS.map(item =>
+                                        <option
+                                            key={`hour${item}`}
+                                            value={item}
+                                        >{item}</option>)}
+                                </select>
+                                <select
+                                    value={this.state.firstDate ? this.state.firstDate.minute() : this.state.startDate.minute()}
+                                    onChange={(e)=> {
+                                        const value = e.target.value;
+                                        const data = this.state.firstDate || this.state.startDate;
+                                        this.setState({
+                                            firstDate: data.minute(value)
+                                        });
+                                    }}
+                                >
+                                    {MINUTES.map(item=> <option
+                                        key={`minute${item}`}
+                                        value={item}>{item}</option>)}
+                                </select>
+                            </div>
+                            <div className="timePicker">
+                                <label>Время </label>
+                                <select
+                                    value={this.state.secondDate ? this.state.secondDate.hour() : this.state.endDate.hour()}
+                                    onChange={(e)=> {
+                                        const value = e.target.value;
+                                        const data = this.state.secondDate || this.state.endDate;
+                                        this.setState({
+                                            secondDate: data.hour(value)
+                                        });
+                                    }}
+                                >
+                                    {HOURS.map(item =>
+                                        <option
+                                            key={`lastHour${item}`}
+                                            value={item}
+                                        >{item}</option>)}
+                                </select>
+                                <select
+                                    value={this.state.secondDate ? this.state.secondDate.minute() : this.state.endDate.minute()}
+                                    onChange={(e)=> {
+                                        const value = e.target.value;
+                                        const data = this.state.secondDate || this.state.endDate;
+                                        this.setState({
+                                            secondDate: data.minute(value)
+                                        });
+                                    }}
+                                >
+                                    {MINUTES.map(item=> <option
+                                        key={`lastMinute${item}`}
+                                        value={item}>{item}</option>)}
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <button onClick={() => {
-                            this.setState({
-                                startDate: this.state.startDate.add(1, 'month'),
-                                endDate: this.state.endDate.add(1, 'month')
-                            })
-                        }}>Вперед</button>
-                        <div className="monthLabel">
-                            {this.state.endDate.format("MMMM YYYY")}
-                        </div>
-                        <table>
-                            <tbody>
-                            <tr className="weekDaysLabels">
-                                <th>Пн</th>
-                                <th>Вт</th>
-                                <th>Ср</th>
-                                <th>Чт</th>
-                                <th>Пт</th>
-                                <th>Сб</th>
-                                <th>Вс</th>
-                            </tr>
-                            {this.renderCalendar('right').map((item, index)=>
-                                <tr key={`week2#${index}`}>{item.map((item, index2)=>
-                                    <td
-                                        data-item="day"
-                                        data-first-date={
-                                            this.state.firstDate &&
-                                            item.month() === this.state.endDate.month() &&
-                                            this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
-                                        }
-                                        data-second-date={
-                                            this.state.secondDate &&
-                                            item.month() === this.state.endDate.month() &&
-                                            this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
-                                        }
-                                        data-range={
-                                            item >= this.state.firstDate &&
-                                            item <= this.state.secondDate ||
-                                            item >= this.state.firstDate &&
-                                            item <= this.state.secondDateTemp ? true : false
-                                        }
-                                        data-other={
-                                            item.month() !== this.state.endDate.month() ? true : false
-                                        }
-                                        key={`week2#${index}day#${index2}`}
-                                        className={index2 > 4 ? 'holiday' : 'd'}
-                                        onClick={()=> {
-                                            this.selectDate(item);
-                                        }}
-                                        onMouseEnter={()=> {
-                                            if(this.state.firstDate !== '' && this.state.secondDate === '') {
-                                                this.setState({
-                                                    secondDateTemp: item
-                                                });
+                    {this.state.months.map(currentMonth => (
+                        <div key={`${currentMonth.month()}`}>
+                            <div className="monthLabel">
+                                {currentMonth.format("MMMM YYYY")}
+                            </div>
+                            <table>
+                                <tbody>
+                                <tr className="weekDaysLabels">
+                                    <th>Пн</th>
+                                    <th>Вт</th>
+                                    <th>Ср</th>
+                                    <th>Чт</th>
+                                    <th>Пт</th>
+                                    <th>Сб</th>
+                                    <th>Вс</th>
+                                </tr>
+                                {this.renderCalendar(currentMonth).map((item, index)=>
+                                    <tr key={`${currentMonth.month()}week#${index}`}>{item.map((item, index2)=>
+                                        <td
+                                            data-item="day"
+                                            data-first-date={
+                                                this.state.firstDate &&
+                                                currentMonth.month() === item.month() &&
+                                                this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
                                             }
-                                        }}
-                                        onMouseOut={()=> {
-                                            if(this.state.firstDate !== '') {
-                                                this.setState({
-                                                    secondDateTemp: ''
-                                                });
+                                            data-second-date={
+                                                this.state.secondDate &&
+                                                currentMonth.month() === item.month() &&
+                                                this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
                                             }
-                                        }}
-                                    >{item.date()}
-                                        {this.state.firstDate &&
-                                        item.month() === this.state.endDate.month() &&
-                                        this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
-                                            <p className="label">Начало</p> : false}
-                                        {this.state.secondDate &&
-                                        item.month() === this.state.endDate.month() &&
-                                        this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
-                                            <p className="label">Конец</p> : false}
-                                    </td>)}
-                                </tr>)}
-                            </tbody>
-                        </table>
-                        <div className="timePicker">
-                            <label>Время </label>
-                            <select
-                                value={this.state.secondDate ? this.state.secondDate.hour() : this.state.startDate.hour()}
-                                onChange={(e)=> {
-                                    const value = e.target.value;
-                                    const data = this.state.secondDate || this.state.startDate;
-                                    this.setState({
-                                        secondDate: data.hour(value)
-                                    });
-                                }}
-                            >
-                                {HOURS.map(item=> <option
-                                    key={`hourNext${item}`}
-                                    value={item}>{item}</option>)}
-                            </select>
-                            <select
-                                value={this.state.secondDate ? this.state.secondDate.minute() : this.state.startDate.minute()}
-                                onChange={(e)=> {
-                                    const value = e.target.value;
-                                    const data = this.state.secondDate || this.state.endDate;
-                                    this.setState({
-                                        secondDate: data.minute(value)
-                                    });
-                                }}
-                            >
-                                {MINUTES.map(item=> <option
-                                    key={`minuteNext${item}`}
-                                    value={item}>{item}</option>)}
-                            </select>
+                                            data-range={
+                                                item >= this.state.firstDate &&
+                                                item <= this.state.secondDate ||
+                                                item >= this.state.firstDate &&
+                                                item <= this.state.secondDateTemp ? true : false
+                                            }
+                                            data-other={
+                                                item.month() !== currentMonth.month() ? true : false
+                                            }
+                                            key={`${currentMonth.month()}week#${index}day#${index2}`}
+                                            className={index2 > 4 ? 'holiday' : 'd'}
+                                            onClick={()=> {
+                                                this.selectDate(item);
+                                            }}
+                                            onMouseEnter={()=> {
+                                                if(this.state.firstDate !== '' && this.state.secondDate === '') {
+                                                    this.setState({
+                                                        secondDateTemp: item
+                                                    });
+                                                }
+                                            }}
+                                            onMouseOut={()=> {
+                                                if(this.state.firstDate !== '') {
+                                                    this.setState({
+                                                        secondDateTemp: ''
+                                                    });
+                                                }
+                                            }}
+                                        >{item.date()}
+                                            {this.state.firstDate &&
+                                            item.month() === currentMonth.month() &&
+                                            this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                                <p className="label">Начало</p> : false}
+                                            {this.state.secondDate &&
+                                            item.month() === currentMonth.month() &&
+                                            this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                                <p className="label">Конец</p> : false}
+                                        </td>)}
+                                    </tr>)}
+                                </tbody>
+                            </table>
                         </div>
-                        <button onClick={()=>{
-                            this.setState({
-                                showCalendar: !this.state.showCalendar
-                            })
-                        }}>Закрыть</button>
-                    </div>
+                    ))}
                 </div>}
             </div>
         );
@@ -371,7 +345,8 @@ const WRAPPER =()=> {
         <DataRangePicker
             //initialStartDate={moment()}
             //initialEndDate={moment().add(1, 'month')}
-            onChangeValue={(dateFirst, dateSecond)=>{console.log(dateFirst, dateSecond)}}
+            months={4}
+            onChangeValue={(dateFirst, dateSecond)=>{/*console.log(dateFirst, dateSecond)*/}}
         />
     );
 }
