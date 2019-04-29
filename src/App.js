@@ -1,5 +1,5 @@
-import React, { Component, useEffect } from 'react';
-import styles from './App.css';
+import React, { Component } from 'react';
+import './App.css';
 const moment = require('moment');
 
 const HOURS = [];
@@ -32,9 +32,9 @@ class DataRangePicker extends Component {
         let minute = start.minute();
         let second = start.second();
 
-        let daysInMonth = moment([year, month]).daysInMonth();
+        //let daysInMonth = moment([year, month]).daysInMonth();
         let firstDay = moment([year, month, 1]);
-        let lastDay = moment([year, month, daysInMonth]);
+        //let lastDay = moment([year, month, daysInMonth]);
 
         let lastMonth = moment(firstDay).subtract(1, 'month').month();
         let lastYear = moment(firstDay).subtract(1, 'month').year();
@@ -43,7 +43,6 @@ class DataRangePicker extends Component {
         let dayOfWeek = firstDay.day();
 
         let startDay = daysInLastMonth - dayOfWeek + 2;
-
         if (startDay > daysInLastMonth) startDay -= 7;
 
         let curDate = moment([
@@ -59,9 +58,6 @@ class DataRangePicker extends Component {
             calendar[i] = [];
         }
 
-        let col, row;
-
-        let startIndex = firstDay.day();
         for (let i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment(curDate).add(24, 'hour')) {
             if (i > 0 && col % 7 === 0) {
                 col = 0;
@@ -130,12 +126,12 @@ class DataRangePicker extends Component {
         return updateObject;
     }
 
-
     render() {
         {this.props.onChangeValue(this.state.firstDate, this.state.secondDate)}
         return (
-            <div className="App">
+            <div className="dataRangePicker">
                 <input
+                    className="dataRangePicker__input"
                     type="text"
                     value={`${this.state.firstDate ? this.state.firstDate.format("DD-MM-YY") : 'Старт'} ${this.state.secondDate ? `- ${this.state.secondDate.format("DD-MM-YY")}` : '- Выберите вторую дату'}`}
                     onFocus={()=>{
@@ -146,8 +142,8 @@ class DataRangePicker extends Component {
                     onChange={()=>{}}
                 />
                 {this.state.showCalendar &&
-                <div className="content" style={{display: 'flex', justifyContent: 'space-around'}}>
-                    <div>
+                <div className="dataRangePicker__calendar">
+                    <div className="dataRangePicker__calendar_controls">
                         <div className="buttons">
                             <button onClick={() => {
                                 this.setState({
@@ -171,6 +167,13 @@ class DataRangePicker extends Component {
                                 }
 
                             }}>Назад</button>
+                            <button
+                                onClick={()=>{
+                                    this.setState({
+                                        showCalendar: false
+                                    });
+                                }}
+                            >OK</button>
                             <button onClick={() => {
                                 this.setState({
                                     startDate: this.state.startDate.add(this.state.count-1, 'month'),
@@ -261,8 +264,9 @@ class DataRangePicker extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className="dataRangePicker__calendar_content">
                     {this.state.months.map(currentMonth => (
-                        <div key={`${currentMonth.month()}`}>
+                        <div key={`${currentMonth.month()}`} className="dataRangePicker__calendarItem">
                             <div className="monthLabel">
                                 {currentMonth.format("MMMM YYYY")}
                             </div>
@@ -277,38 +281,38 @@ class DataRangePicker extends Component {
                                     <th>Сб</th>
                                     <th>Вс</th>
                                 </tr>
-                                {this.renderCalendar(currentMonth).map((item, index)=>
-                                    <tr key={`${currentMonth.month()}week#${index}`}>{item.map((item, index2)=>
+                                {this.renderCalendar(currentMonth).map((string, index)=>
+                                    <tr key={`${currentMonth.month()}week#${index}`}>{string.map((cell, index2)=>
                                         <td
                                             data-item="day"
                                             data-first-date={
                                                 this.state.firstDate &&
-                                                currentMonth.month() === item.month() &&
-                                                this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
+                                                currentMonth.month() === cell.month() &&
+                                                this.state.firstDate.format('MMMM D YYYY') === cell.format('MMMM D YYYY') ? true : false
                                             }
                                             data-second-date={
                                                 this.state.secondDate &&
-                                                currentMonth.month() === item.month() &&
-                                                this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ? true : false
+                                                currentMonth.month() === cell.month() &&
+                                                this.state.secondDate.format('MMMM D YYYY') === cell.format('MMMM D YYYY') ? true : false
                                             }
                                             data-range={
-                                                item >= this.state.firstDate &&
-                                                item <= this.state.secondDate ||
-                                                item >= this.state.firstDate &&
-                                                item <= this.state.secondDateTemp ? true : false
+                                                cell >= this.state.firstDate &&
+                                                cell <= this.state.secondDate ||
+                                                cell >= this.state.firstDate &&
+                                                cell <= this.state.secondDateTemp ? true : false
                                             }
                                             data-other={
-                                                item.month() !== currentMonth.month() ? true : false
+                                                cell.month() !== currentMonth.month() ? true : false
                                             }
                                             key={`${currentMonth.month()}week#${index}day#${index2}`}
                                             className={index2 > 4 ? 'holiday' : 'd'}
                                             onClick={()=> {
-                                                this.selectDate(item);
+                                                this.selectDate(cell);
                                             }}
                                             onMouseEnter={()=> {
                                                 if(this.state.firstDate !== '' && this.state.secondDate === '') {
                                                     this.setState({
-                                                        secondDateTemp: item
+                                                        secondDateTemp: cell
                                                     });
                                                 }
                                             }}
@@ -319,14 +323,14 @@ class DataRangePicker extends Component {
                                                     });
                                                 }
                                             }}
-                                        >{item.date()}
+                                        >{cell.date()}
                                             {this.state.firstDate &&
-                                            item.month() === currentMonth.month() &&
-                                            this.state.firstDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                            cell.month() === currentMonth.month() &&
+                                            this.state.firstDate.format('MMMM D YYYY') === cell.format('MMMM D YYYY') ?
                                                 <p className="label">Начало</p> : false}
                                             {this.state.secondDate &&
-                                            item.month() === currentMonth.month() &&
-                                            this.state.secondDate.format('MMMM D YYYY') === item.format('MMMM D YYYY') ?
+                                            cell.month() === currentMonth.month() &&
+                                            this.state.secondDate.format('MMMM D YYYY') === cell.format('MMMM D YYYY') ?
                                                 <p className="label">Конец</p> : false}
                                         </td>)}
                                     </tr>)}
@@ -334,6 +338,7 @@ class DataRangePicker extends Component {
                             </table>
                         </div>
                     ))}
+                    </div>
                 </div>}
             </div>
         );
@@ -343,9 +348,9 @@ class DataRangePicker extends Component {
 const WRAPPER =()=> {
     return(
         <DataRangePicker
-            //initialStartDate={moment()}
-            //initialEndDate={moment().add(1, 'month')}
-            months={4}
+            initialStartDate={moment()}
+            initialEndDate={moment().add(1, 'month')}
+            months={12}
             onChangeValue={(dateFirst, dateSecond)=>{/*console.log(dateFirst, dateSecond)*/}}
         />
     );
