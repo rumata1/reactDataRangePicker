@@ -43,7 +43,10 @@ class DataRangePicker extends Component {
         let dayOfWeek = firstDay.day();
 
         let startDay = daysInLastMonth - dayOfWeek + 2;
+        console.log(daysInLastMonth, dayOfWeek);
+
         if (startDay > daysInLastMonth) startDay -= 7;
+        if(dayOfWeek === 1) {startDay = 1; lastMonth = month;}
 
         let curDate = moment([
             lastYear,
@@ -67,15 +70,15 @@ class DataRangePicker extends Component {
             curDate.hour(12);
         }
 
-        let html = [];
+        let table = [];
         for (let row = 0; row < 6; row++) {
             let tr = [];
             for (let col = 0; col < 7; col++) {
                 tr.push(calendar[row][col]);
             }
-            html.push(tr);
+            table.push(tr);
         }
-        return html;
+        return table;
     }
 
     selectDate(item) {
