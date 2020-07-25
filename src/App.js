@@ -4,8 +4,6 @@ import "moment/locale/ru";
 const moment = require("moment");
 moment.locale("ru");
 
-console.log(moment().format("MMMM"));
-
 const HOURS = [];
 const MINUTES = [];
 
@@ -47,7 +45,6 @@ class DataRangePicker extends Component {
     let dayOfWeek = firstDay.day();
 
     let startDay = daysInLastMonth - dayOfWeek + 2;
-    console.log(daysInLastMonth, dayOfWeek);
 
     if (startDay > daysInLastMonth) startDay -= 7;
     if (dayOfWeek === 1) {
@@ -444,7 +441,7 @@ const WRAPPER = () => {
       initialEndDate={moment().add(1, "month")}
       months={2}
       onChangeValue={(dateFirst, dateSecond) => {
-        /*console.log(dateFirst, dateSecond)*/
+        console.log(dateFirst, dateSecond);
       }}
     />
   );
